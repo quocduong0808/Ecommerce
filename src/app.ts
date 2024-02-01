@@ -12,9 +12,9 @@ app.use(compression());
 //init db
 
 //init routers
-app.get('/',(req,res,next)=>{
-    return res.status(200).json({
-        message:'Welcome ecommerce service'
-    });
+app.get('/', (req, res) => {
+  return res.status(200).json({
+    message: 'Welcome ecommerce service',
+  });
 });
 //handling error
