@@ -1,5 +1,4 @@
-app = require('./src/app.js');
-
+import { app }  from './src/app'
 const PORT = 3055;
 const server = app.listen(PORT,()=>{
     console.log(`Ecommerce server start at port ${PORT}`);

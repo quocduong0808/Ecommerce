@@ -1,9 +1,9 @@
-const morgan = require('morgan');
-const express = require('express');
-const { default: helmet } = require('helmet');
-const compression = require('compression');
+import morgan from 'morgan';
+import express from 'express';
+import { default as helmet } from 'helmet';
+import compression from 'compression';
 
-const app = express();
+export const app = express();
 
 //init middlewares
 app.use(morgan('dev'));
@@ -18,5 +18,3 @@ app.get('/',(req,res,next)=>{
     });
 });
 //handling error
-
-module.exports = app;
