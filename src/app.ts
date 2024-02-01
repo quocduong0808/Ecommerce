@@ -11,7 +11,7 @@ app.use(helmet());
 app.use(compression());
 //init db
 
-//init router
+//init routers
 app.get('/',(req,res,next)=>{
     return res.status(200).json({
         message:'Welcome ecommerce service'
