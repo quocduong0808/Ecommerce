@@ -14,7 +14,7 @@ const ENV_TYPE = {
   PROD: 'prod',
   DEV: 'dev',
 };
-export class AppConfig {
+export default class AppConfig {
   public static ENV: Config = {
     APP: {
       PORT: 0,
