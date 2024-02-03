@@ -1,0 +1,10 @@
+{
+    "APP": {
+      "PORT": 5055
+    },
+    "DB": {
+      "HOST": "localhost",
+      "PORT": 27071,
+      "NAME": "ecommerce"
+    }
+}

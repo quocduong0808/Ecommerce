@@ -14,7 +14,11 @@
     "env": {
       "node": true
     },
-    "rules": {},
+    "rules": {
+      "prettier/prettier": ["error",{
+        "endOfLine": "auto"}
+      ]
+    },
     "ignorePatterns": ["dist"]
   }
   
