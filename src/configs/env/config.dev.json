@@ -4,7 +4,7 @@
     },
     "DB": {
       "HOST": "localhost",
-      "PORT": 27071,
+      "PORT": 27017,
       "NAME": "ecommerce"
     }
 }

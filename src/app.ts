@@ -2,28 +2,45 @@ import morgan from 'morgan';
 import express, { Application } from 'express';
 import { default as helmet } from 'helmet';
 import compression from 'compression';
-import { Database } from './dbs/init.mongodb';
+import { database } from './dbs/init.mongodb';
 import { monitorOverhead } from './helpers/system.helper';
+import { rootRouter } from './routers/router';
+import { NameClass, getBeanContext } from './commons/AppContext';
 
-export default class App {
-  public static initApp(app: Application): void {
-    this.config(app);
+class App implements NameClass {
+  private app: Application;
+
+  constructor() {
+    this.app = express();
+    this.config();
   }
-  private static config(app: Application) {
+  getName(): string {
+    return 'Application';
+  }
+
+  private config() {
     //init middlewares
-    app = express();
-    app.use(morgan('dev'));
-    app.use(helmet());
-    app.use(compression());
+    this.app = express();
+    this.app.use(morgan('dev'));
+    this.app.use(helmet());
+    this.app.use(compression());
     //init db
-    Database.getInstance();
+    database;
     monitorOverhead();
     //init routers
-    app.get('/', (req, res) => {
-      return res.status(200).json({
-        message: 'Welcome ecommerce service',
-      });
-    });
+    this.app.use('/', rootRouter.getRouter());
+    // this.app.get('/', (req, res) => {
+    //   return res.status(200).json({
+    //     message: 'Welcome ecommerce service',
+    //   });
+    // });
     //handling error
   }
+
+  public get(): Application {
+    return this.app;
+  }
 }
+
+const app = getBeanContext<App>(App, () => new App());
+export { app };

@@ -1,13 +1,17 @@
 import mongoose from 'mongoose';
 import { countMongoseCon } from '../helpers/system.helper';
+import AppConfig from '../configs/app.config';
+import { NameClass, getBeanContext } from '../commons/AppContext';
 
-export class Database {
-  private static instance: Database;
+class Database implements NameClass {
   constructor() {
     this.connect();
   }
+  getName(): string {
+    return 'Database';
+  }
   private connect(): void {
-    const uri = 'mongodb://localhost:27017/ecommerce'; // Replace with your MongoDB URI
+    const uri = `mongodb://${AppConfig.ENV.DB.HOST}:${AppConfig.ENV.DB.PORT}/${AppConfig.ENV.DB.NAME}`; // Replace with your MongoDB URI
     mongoose.set('debug', true);
     mongoose.set('debug', { color: true });
     mongoose
@@ -23,11 +27,7 @@ export class Database {
         throw error;
       });
   }
-
-  public static getInstance(): Database {
-    if (this.instance === undefined) {
-      this.instance = new Database();
-    }
-    return this.instance;
-  }
 }
+
+const database = getBeanContext<Database>(Database, () => new Database());
+export { database };
