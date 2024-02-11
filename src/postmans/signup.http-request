@@ -1,0 +1,13 @@
+{
+  "body": {
+    "content": "ewoibmFtZSI6ICJzaG9wXzEiLAoiZW1haWwiOiJzaG9wMUBnbWFpbC5jb20iLAoicGFzc3dvcmQiOiIxMjM0NTY3Igp9",
+    "file": false,
+    "fileSize": false
+  },
+  "headers": {
+    "content-type": "application/json"
+  },
+  "method": "POST",
+  "title": "Home",
+  "url": "http://localhost:5055/api/v1/signup"
+}

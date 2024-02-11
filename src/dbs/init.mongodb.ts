@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { countMongoseCon } from '../helpers/system.helper';
 import AppConfig from '../configs/app.config';
-import { NameClass, getBeanContext } from '../commons/AppContext';
+import { NameClass, getBeanContext } from '../commons/app.context';
 
 class Database implements NameClass {
   constructor() {

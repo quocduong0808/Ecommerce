@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import RouterBase from '../../commons/router.base';
 import { homeController } from '../../controllers/home/home.controller';
-import { getBeanContext } from '../../commons/AppContext';
+import { getBeanContext } from '../../commons/app.context';
 
 class HomeRouter extends RouterBase {
   getName(): string {

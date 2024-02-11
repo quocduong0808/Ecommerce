@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { NameClass } from './AppContext';
+import { NameClass } from './app.context';
 
 export default abstract class RouterBase implements NameClass {
   private router: Router;

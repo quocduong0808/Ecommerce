@@ -14,6 +14,9 @@ export const AppConst = {
     SIGN_UP: {
       SHOP_EXISTED_ERROR: 'This shop already existed',
       REGISTRATION_ERROR: 'Some thing error, cannot registration',
+      CREATE_SHOP_ERROR: 'Cannot create new shop',
+      CREATE_TOKEN_ERROR: 'Cannot create new token',
+      SUCCESS: 'Registration success',
     },
   },
   MONGO_MODEL: {

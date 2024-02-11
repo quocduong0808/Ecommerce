@@ -2,7 +2,8 @@ import { NextFunction, Request, Response } from 'express';
 import { AppConst } from '../../commons/constans';
 import { StatusCodes } from 'http-status-codes';
 import { homeService } from '../../services/home.service';
-import { NameClass, getBeanContext } from '../../commons/AppContext';
+import { NameClass, getBeanContext } from '../../commons/app.context';
+import ShopDto from '../../dtos/shop.dto';
 class HomeController implements NameClass {
   getName(): string {
     return 'HomeController';
@@ -19,10 +20,11 @@ class HomeController implements NameClass {
   }
   async signup(req: Request, res: Response, next: NextFunction) {
     try {
+      const signUp = req.body as ShopDto;
       const result = await homeService.signUp(
-        'shop_1',
-        'shop1@email.com',
-        '1234567'
+        signUp.name,
+        signUp.email,
+        signUp.password
       );
       console.log('here' + JSON.stringify(result));
       res.status(200).send(result);

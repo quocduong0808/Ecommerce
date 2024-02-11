@@ -5,7 +5,7 @@ import compression from 'compression';
 import { database } from './dbs/init.mongodb';
 import { monitorOverhead } from './helpers/system.helper';
 import { rootRouter } from './routers/router';
-import { NameClass, getBeanContext } from './commons/AppContext';
+import { NameClass, getBeanContext } from './commons/app.context';
 
 class App implements NameClass {
   private app: Application;
@@ -24,6 +24,12 @@ class App implements NameClass {
     this.app.use(morgan('dev'));
     this.app.use(helmet());
     this.app.use(compression());
+    this.app.use(express.json());
+    this.app.use(
+      express.urlencoded({
+        extended: true,
+      })
+    );
     //init db
     database;
     monitorOverhead();

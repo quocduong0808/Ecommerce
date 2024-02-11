@@ -1,4 +1,4 @@
-import { Model, Schema } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { AppConst } from '../commons/constans';
 
 const keyStoreSchema = new Schema(
@@ -23,9 +23,6 @@ const keyStoreSchema = new Schema(
   }
 );
 
-const keyModel = new Model(
-  AppConst.MONGO_MODEL.DOCUMENT.KEY_STORE,
-  keyStoreSchema
-);
+const keyModel = model(AppConst.MONGO_MODEL.DOCUMENT.KEY_STORE, keyStoreSchema);
 
 export { keyModel };
