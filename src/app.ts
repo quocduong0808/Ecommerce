@@ -1,11 +1,15 @@
 import morgan from 'morgan';
-import express, { Application } from 'express';
+import express, { Application, Request, Response, NextFunction } from 'express';
 import { default as helmet } from 'helmet';
 import compression from 'compression';
 import { database } from './dbs/init.mongodb';
 import { monitorOverhead } from './helpers/system.helper';
 import { rootRouter } from './routers/router';
 import { NameClass, getBeanContext } from './commons/app.context';
+import ExpressSession from 'express-session';
+import ApiRes from './models/apiRes.model';
+import httpStatus from 'http-status';
+import ApiError from './commons/api.error';
 
 class App implements NameClass {
   private app: Application;
@@ -21,6 +25,13 @@ class App implements NameClass {
   private config() {
     //init middlewares
     this.app = express();
+    this.app.use(
+      ExpressSession({
+        secret: 'i-love-husky',
+        resave: false,
+        saveUninitialized: true,
+      })
+    );
     this.app.use(morgan('dev'));
     this.app.use(helmet());
     this.app.use(compression());
@@ -35,12 +46,28 @@ class App implements NameClass {
     monitorOverhead();
     //init routers
     this.app.use('/', rootRouter.getRouter());
-    // this.app.get('/', (req, res) => {
-    //   return res.status(200).json({
-    //     message: 'Welcome ecommerce service',
-    //   });
-    // });
+
+    this.app.all('*', (req: Request, res: Response, next: NextFunction) => {
+      next(
+        new ApiError(httpStatus.NOT_FOUND, `Can't find Url: ${req.originalUrl}`)
+      );
+    });
     //handling error
+    this.app.use(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      (error: Error, req: Request, res: Response, next: NextFunction) => {
+        console.error(error);
+        const status =
+          error instanceof ApiError
+            ? error.status
+            : httpStatus.INTERNAL_SERVER_ERROR;
+        const message =
+          error instanceof ApiError
+            ? error.message
+            : httpStatus[httpStatus.INTERNAL_SERVER_ERROR];
+        return res.status(status).send(new ApiRes(status, message));
+      }
+    );
   }
 
   public get(): Application {

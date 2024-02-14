@@ -3,11 +3,21 @@ export const AppConst = {
     CODE: {
       ERROR: 'XXXXX',
       SUCCESS: '20000',
+      PERMISSION_DENIED: '403',
     },
     STATUS: {
       ERROR: 'ERROR',
       SUCCESS: 'SUCCESS',
+      PERMISSION_DENIED: 'FORBIDDEN',
     },
+  },
+  HEADER: {
+    API_KEY: 'x-api-key',
+    AUTHORIZATION: 'authorization',
+  },
+  AUTH: {
+    PERMISSION_DENIED: 'Permission denied',
+    APIKEY_NOTFOUND: 'API key not found',
   },
   HOME: {
     WELCOME: 'Welcome to Ecommerce server',
@@ -21,12 +31,14 @@ export const AppConst = {
   },
   MONGO_MODEL: {
     COLLECTION: {
-      SHOP: 'Shops',
-      KEY_STORE: 'Keys',
+      SHOP: 'shops',
+      KEY_STORE: 'keys',
+      API_KEY: 'apikeys',
     },
     DOCUMENT: {
-      SHOP: 'Shops',
-      KEY_STORE: 'Key',
+      SHOP: 'shop',
+      KEY_STORE: 'key',
+      API_KEY: 'apikey',
     },
   },
   PRIVILEGE: {

@@ -1,9 +1,27 @@
+type AuthType = {
+  id: string;
+  email: string;
+  apikey: ApiKeyDto;
+};
+
+// Augment express-session with a custom SessionData object
+declare module 'express-session' {
+  interface SessionData {
+    auth: AuthType;
+  }
+}
+declare module 'mongoose' {
+  interface SessionOption {
+    session?: ClientSession | null;
+  }
+}
 import dotenv from 'dotenv';
 import AppConfig from './src/configs/app.config';
 dotenv.config();
 AppConfig.loadConfig();
-import mongoose from 'mongoose';
+import mongoose, { ClientSession } from 'mongoose';
 import { app } from './src/app';
+import ApiKeyDto from './src/dtos/apikey.dto';
 //console.log('Process: ', process.env);
 const PORT = AppConfig.ENV.APP.PORT;
 const server = app.get().listen(PORT, () => {

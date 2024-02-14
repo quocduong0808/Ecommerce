@@ -4,7 +4,9 @@
     "file": false,
     "fileSize": false
   },
-  "headers": {},
+  "headers": {
+    "x-api-key": "1234567"
+  },
   "method": "GET",
   "title": "Home",
   "url": "http://localhost:5055/api/v1/home"

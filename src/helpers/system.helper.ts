@@ -13,6 +13,7 @@ export function monitorOverhead(): void {
     const numCons = mongoose.connections.length;
     const numCors = os.cpus().length;
     const maxCons = numCors * maxThreadPerCor;
+    //console.log(`Num of connection: ${numCons}`);
     //console.log(`Memory usage: ${process.memoryUsage().rss / 1024 / 1024} Mb`);
     if (numCons > maxCons) {
       console.log(

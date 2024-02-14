@@ -2,6 +2,7 @@ import { Router } from 'express';
 import RouterBase from '../../commons/router.base';
 import { homeController } from '../../controllers/home/home.controller';
 import { getBeanContext } from '../../commons/app.context';
+import { asyncHandle } from '../../commons/error.handler';
 
 class HomeRouter extends RouterBase {
   getName(): string {
@@ -11,8 +12,8 @@ class HomeRouter extends RouterBase {
     super();
   }
   config(router: Router): void {
-    router.get('/home', homeController.home);
-    router.post('/signup', homeController.signup);
+    router.get('/home', asyncHandle(homeController.home));
+    router.post('/signup', asyncHandle(homeController.signup));
   }
 }
 

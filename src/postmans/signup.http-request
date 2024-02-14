@@ -5,9 +5,10 @@
     "fileSize": false
   },
   "headers": {
-    "content-type": "application/json"
+    "content-type": "application/json",
+    "x-api-key": "1234567"
   },
   "method": "POST",
   "title": "Home",
-  "url": "http://localhost:5055/api/v1/signup"
+  "url": "http://localhost:3057/api/v1/signup"
 }

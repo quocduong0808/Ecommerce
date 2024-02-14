@@ -11,7 +11,7 @@ class Database implements NameClass {
     return 'Database';
   }
   private connect(): void {
-    const uri = `mongodb://${AppConfig.ENV.DB.HOST}:${AppConfig.ENV.DB.PORT}/${AppConfig.ENV.DB.NAME}`; // Replace with your MongoDB URI
+    const uri = `mongodb://${AppConfig.ENV.DB.HOST}:${AppConfig.ENV.DB.PORT},${AppConfig.ENV.DB.HOST}:27019,${AppConfig.ENV.DB.HOST}:27020/${AppConfig.ENV.DB.NAME}?replicaSet=${AppConfig.ENV.DB.REPLSET}`; // Replace with your MongoDB URI
     mongoose.set('debug', true);
     mongoose.set('debug', { color: true });
     mongoose
