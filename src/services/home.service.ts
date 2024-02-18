@@ -10,11 +10,73 @@ import { transactional } from '../dbs/trans.mongodb';
 import { startSession } from 'mongoose';
 import { shopRepo } from '../repos/shop.repo';
 import { keyTokenRepo } from '../repos/keytoken.repo';
+import httpStatus from 'http-status';
+import { keyTokenService } from './keytoken.service';
 
 export default class HomeService implements NameClass {
   constructor() {}
   getName(): string {
     return 'HomeService';
+  }
+  public async logout(userId: string) {
+    const session = await startSession();
+    const result = await transactional.withTransaction(session, async () => {
+      await keyTokenRepo.removeKeyByUserId(userId, session);
+      return new ApiRes(httpStatus.OK, AppConst.HOME.LOGOUT.LOGOUT_SUCCESS);
+    });
+    return result;
+  }
+  public async login(
+    email: string,
+    password: string,
+    refreshToken?: string | undefined,
+    userId?: string | undefined
+  ) {
+    const session = await startSession();
+    const resutl = await transactional.withTransaction(session, async () => {
+      if (refreshToken) {
+        const result = await keyTokenService.refreshToken(
+          userId || '',
+          refreshToken,
+          session
+        );
+        return new ApiRes(httpStatus.OK, httpStatus[httpStatus.OK], result);
+      }
+      const shopEx = await shopRepo.findOneByEmail(email);
+      if (!shopEx)
+        throw new ApiError(httpStatus.UNAUTHORIZED, AppConst.AUTH.SHOP_NOT_REG);
+      if (!(await bcrypt.compare(password, shopEx.password || '')))
+        throw new ApiError(
+          httpStatus.UNAUTHORIZED,
+          httpStatus[httpStatus.UNAUTHORIZED]
+        );
+      //generate new token
+      const tokens = authUtil.createTokenKeyPair(
+        shopEx._id.toString(),
+        shopEx.name || '',
+        shopEx.email || ''
+      );
+      if (!tokens)
+        throw new ApiError(
+          httpStatus.INTERNAL_SERVER_ERROR,
+          AppConst.HOME.SIGN_UP.CREATE_TOKEN_ERROR
+        );
+      await keyTokenRepo.createOrUpdate(
+        shopEx._id.toString(),
+        tokens.publicKey,
+        tokens.refreshToken,
+        undefined,
+        session
+      );
+      return new ApiRes(httpStatus.OK, httpStatus[httpStatus.OK], {
+        shop: convertUtil.getInfosData(['_id', 'name', 'email'], shopEx),
+        tokens: convertUtil.getInfosData(
+          ['accessToken', 'refreshToken'],
+          tokens
+        ),
+      });
+    });
+    return resutl;
   }
   public async signUp(name: string, email: string, password: string) {
     const session = await startSession();
@@ -39,14 +101,16 @@ export default class HomeService implements NameClass {
       );
       if (newShop) {
         const { publicKey, accessToken, refreshToken } =
-          authUtil.createTokenKeyPair(newShop._id.toString());
+          authUtil.createTokenKeyPair(newShop._id.toString(), name, email);
         if (
           publicKey &&
           accessToken &&
           refreshToken &&
-          (await keyTokenRepo.createToken(
+          (await keyTokenRepo.createOrUpdate(
             newShop._id.toString(),
             publicKey.toString(),
+            refreshToken,
+            undefined,
             session
           ))
         ) {

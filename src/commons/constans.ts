@@ -14,10 +14,13 @@ export const AppConst = {
   HEADER: {
     API_KEY: 'x-api-key',
     AUTHORIZATION: 'authorization',
+    CLIENT_ID: 'x-client-id',
   },
   AUTH: {
     PERMISSION_DENIED: 'Permission denied',
     APIKEY_NOTFOUND: 'API key not found',
+    SHOP_NOT_REG: 'Shop is not registed',
+    TOKEN_SECURITY_ERROR: 'Something wrong. Please register',
   },
   HOME: {
     WELCOME: 'Welcome to Ecommerce server',
@@ -27,6 +30,9 @@ export const AppConst = {
       CREATE_SHOP_ERROR: 'Cannot create new shop',
       CREATE_TOKEN_ERROR: 'Cannot create new token',
       SUCCESS: 'Registration success',
+    },
+    LOGOUT: {
+      LOGOUT_SUCCESS: 'Logout successfully',
     },
   },
   MONGO_MODEL: {

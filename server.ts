@@ -1,7 +1,6 @@
 type AuthType = {
-  id: string;
-  email: string;
-  apikey: ApiKeyDto;
+  keyStore: IKeyStore;
+  apikey: IApiKey;
 };
 
 // Augment express-session with a custom SessionData object
@@ -21,7 +20,8 @@ dotenv.config();
 AppConfig.loadConfig();
 import mongoose, { ClientSession } from 'mongoose';
 import { app } from './src/app';
-import ApiKeyDto from './src/dtos/apikey.dto';
+import IApiKey from './src/dtos/apikey.dto';
+import { IKeyStore } from './src/dtos/keystore.dto';
 //console.log('Process: ', process.env);
 const PORT = AppConfig.ENV.APP.PORT;
 const server = app.get().listen(PORT, () => {

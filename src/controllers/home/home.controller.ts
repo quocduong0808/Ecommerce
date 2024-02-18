@@ -3,8 +3,8 @@ import { AppConst } from '../../commons/constans';
 import { StatusCodes } from 'http-status-codes';
 import { homeService } from '../../services/home.service';
 import { NameClass, getBeanContext } from '../../commons/app.context';
-import ShopDto from '../../dtos/shop.dto';
 import httpStatus from 'http-status';
+import { IShop } from '../../dtos/shop.dto';
 class HomeController implements NameClass {
   getName(): string {
     return 'HomeController';
@@ -15,14 +15,29 @@ class HomeController implements NameClass {
       metadata: AppConst.HOME.WELCOME,
     });
   }
-  async signup(req: Request, res: Response) {
-    const signUp = req.body as ShopDto;
-    const result = await homeService.signUp(
-      signUp.name,
-      signUp.email,
-      signUp.password
+  async login(req: Request, res: Response) {
+    const { email, password, refreshToken } = req.body;
+    const userId = req.headers[AppConst.HEADER.CLIENT_ID];
+    const result = await homeService.login(
+      email,
+      password,
+      refreshToken,
+      userId?.toString()
     );
-    console.log('here' + JSON.stringify(result));
+    return res.status(httpStatus.OK).send(result);
+  }
+  async logout(req: Request, res: Response) {
+    const id = req.session.auth?.keyStore.user || '';
+    const result = await homeService.logout(id);
+    return res.status(httpStatus.OK).send(result);
+  }
+  async signup(req: Request, res: Response) {
+    const signUp = req.body as IShop;
+    const result = await homeService.signUp(
+      signUp.name || '',
+      signUp.email,
+      signUp.password || ''
+    );
     return res.status(httpStatus.OK).send(result);
   }
 }

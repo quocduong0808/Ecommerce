@@ -1,0 +1,15 @@
+{
+  "body": {
+    "content": "",
+    "file": false,
+    "fileSize": false
+  },
+  "headers": {
+    "x-api-key": "1234567",
+    "x-client-id": "65d1acd39f1b05ae727283fb",
+    "authorization": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWQxYWNkMzlmMWIwNWFlNzI3MjgzZmIiLCJpYXQiOjE3MDgyNDA1NDEsImV4cCI6MTcwODI0MjM0MX0.pKjth9YIjRURkDCe-HO7uv4d9BpLDK-RSm0meObGYrF_rNYu7o2SKc0yF-Rh8WErCeIPjdfOtJmL0AHnRbxi047eIXGR1pcDdQCTjXFAMeiUeVEfmib_82yCVuoKdKO6DrTZaDOYiveCwKvW380gY8e00HjD7cveLNghoimlxwe9YJm4k7_uF2mSbKS-D3MWHfayHk-4812ydkWSAoPIhLki5oe938_A2lcp0XQiR0bs-Wje9nuOU_lKAJQNZxPtdlqOTF_ChDZGDfQ-3ZY4AtjHlGNs-37vyINe2rpgi3pysopT_ikXKGFm2e66TGzynetKDWh6H_9tUBaq6_CtsA"
+  },
+  "method": "GET",
+  "title": "Logout",
+  "url": "http://localhost:3057/api/v1/logout"
+}

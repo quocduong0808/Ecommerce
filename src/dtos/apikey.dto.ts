@@ -1,7 +1,5 @@
-export default class ApiKeyDto {
-  constructor(
-    public key: string,
-    public status: boolean,
-    public permissions: Array<string>
-  ) {}
+export default interface IApiKey {
+  key: string;
+  status?: boolean;
+  permissions?: Array<string>;
 }

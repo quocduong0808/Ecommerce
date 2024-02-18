@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { NameClass, getBeanContext } from '../commons/app.context';
+import ApiError from '../commons/api.error';
 
 class Transactional implements NameClass {
   getName(): string {
@@ -17,8 +18,14 @@ class Transactional implements NameClass {
       await session.commitTransaction();
       return result;
     } catch (error) {
-      console.error('Rollback transaction error::::');
-      await session.abortTransaction();
+      const err = error as ApiError;
+      if (err.errorWithCommit) {
+        console.error('Commit transaction with error::::');
+        await session.commitTransaction();
+      } else {
+        console.error('Rollback transaction error::::');
+        await session.abortTransaction();
+      }
       throw error;
     } finally {
       await session.endSession();

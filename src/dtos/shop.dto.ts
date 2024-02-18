@@ -1,7 +1,8 @@
-export default class ShopDto {
-  constructor(
-    public name: string,
-    public email: string,
-    public password: string
-  ) {}
+export interface IShop {
+  email: string;
+  name?: string;
+  password?: string;
+  status?: string;
+  verify?: boolean;
+  roles?: Array<string>;
 }
