@@ -1,8 +1,8 @@
 # Ecommerce Express Server
 
 ## Docker command  
-### Pull a image mongo
-- docker pull mongodb/mongodb-community-
+### Pull a image mongo  
+    docker pull mongodb/mongodb-community-
 
 ### Create a volume
 - docker volume create mongovol --opt type=none --opt device=<path-to-folder> --opt o=bind
