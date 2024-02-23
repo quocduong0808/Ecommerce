@@ -2,6 +2,7 @@ export const AppConst = {
   HTTP: {
     CODE: {
       ERROR: 'XXXXX',
+      TOKEN_EXPIRE_ERROR: '000000',
       SUCCESS: '20000',
       PERMISSION_DENIED: '403',
     },
@@ -21,6 +22,7 @@ export const AppConst = {
     APIKEY_NOTFOUND: 'API key not found',
     SHOP_NOT_REG: 'Shop is not registed',
     TOKEN_SECURITY_ERROR: 'Something wrong. Please register',
+    TOKEN_EXPIRE: 'jwt expired',
   },
   HOME: {
     WELCOME: 'Welcome to Ecommerce server',
@@ -40,11 +42,17 @@ export const AppConst = {
       SHOP: 'shops',
       KEY_STORE: 'keys',
       API_KEY: 'apikeys',
+      PRODUCT: 'products',
+      CLOTHING: 'clothings',
+      ELECTRONIC: 'electronics',
     },
     DOCUMENT: {
       SHOP: 'shop',
       KEY_STORE: 'key',
       API_KEY: 'apikey',
+      PRODUCT: 'product',
+      CLOTHING: 'clothing',
+      ELECTRONIC: 'electronic',
     },
   },
   PRIVILEGE: {
@@ -52,5 +60,8 @@ export const AppConst = {
     WRITE: 'WRITE',
     READ: 'READ',
     ADMIN: 'ADMIN',
+  },
+  SHOP: {
+    PRODUCT_TYPE_ERROR: 'Product type does not exit',
   },
 };

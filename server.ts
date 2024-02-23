@@ -1,4 +1,5 @@
 type AuthType = {
+  user: IShop;
   keyStore: IKeyStore;
   apikey: IApiKey;
 };
@@ -22,6 +23,7 @@ import mongoose, { ClientSession } from 'mongoose';
 import { app } from './src/app';
 import IApiKey from './src/dtos/apikey.dto';
 import { IKeyStore } from './src/dtos/keystore.dto';
+import { IShop } from './src/dtos/shop.dto';
 //console.log('Process: ', process.env);
 const PORT = AppConfig.ENV.APP.PORT;
 const server = app.get().listen(PORT, () => {

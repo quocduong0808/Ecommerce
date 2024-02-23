@@ -8,16 +8,17 @@ const keyStoreSchema = new Schema(
       require: true,
       ref: 'Shop',
     },
+    privateKey: {
+      type: String,
+      require: true,
+    },
     publicKey: {
       type: String,
       require: true,
     },
-    refreshTokensUsed: {
+    refreshTokens: {
       type: Array,
       default: [],
-    },
-    refreshToken: {
-      type: String,
       require: true,
     },
   },

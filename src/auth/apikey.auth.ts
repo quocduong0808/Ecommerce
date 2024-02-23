@@ -27,6 +27,7 @@ class ApiKeyAuth implements NameClass {
         );
       } else {
         req.session.auth = {
+          user: { email: '' },
           keyStore: { user: '' },
           apikey: apiKeyObj as unknown as IApiKey,
         };

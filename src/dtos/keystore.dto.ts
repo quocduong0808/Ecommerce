@@ -1,6 +1,9 @@
 export interface IKeyStore {
-  user: string;
+  _id?: string;
+  user?: string;
+  privateKey?: string;
   publicKey?: string;
-  refreshToken?: string;
-  refreshTokensUsed?: Array<string>;
+  refreshTokens?: Array<string>;
+  $addToSet?: { refreshTokens: string };
+  $pull?: { refreshTokens: string };
 }

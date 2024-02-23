@@ -1,4 +1,4 @@
-import { ClientSession, startSession } from 'mongoose';
+import { ClientSession } from 'mongoose';
 import { NameClass, getBeanContext } from '../commons/app.context';
 import { transactional } from '../dbs/trans.mongodb';
 import { keyTokenRepo } from '../repos/keytoken.repo';
@@ -16,9 +16,8 @@ class KeyTokenService implements NameClass {
     refreshToken: string,
     sessionIn?: ClientSession
   ) {
-    let session: ClientSession;
-    let result;
-    const exec = async (session: ClientSession) => {
+    //let session: ClientSession;
+    const result = await transactional.withTransaction(async (session) => {
       //1. get key model by user id
       const key = await keyTokenRepo.findKeyByUserId(userId);
       if (!key)
@@ -26,7 +25,7 @@ class KeyTokenService implements NameClass {
           httpStatus.BAD_REQUEST,
           httpStatus[httpStatus.BAD_REQUEST]
         );
-      if (key.refreshTokensUsed?.includes(refreshToken)) {
+      if (!key.refreshTokens?.includes(refreshToken)) {
         //2. if refresh token is used, delete all token and force throw exception
         await keyTokenRepo.removeKeyByUserId(userId, session);
         throw new ApiError(
@@ -36,7 +35,7 @@ class KeyTokenService implements NameClass {
         );
       }
       const decoded = authUtil.verifyToken(refreshToken, key.publicKey || '');
-      if (key.refreshToken !== refreshToken || decoded.userId !== userId) {
+      if (decoded._id !== userId) {
         //3. if token is invalid throw error
         throw new ApiError(
           httpStatus.FORBIDDEN,
@@ -44,7 +43,7 @@ class KeyTokenService implements NameClass {
         );
       }
       //4. if refresh token is exist, generate new pair token and return
-      const tokens = authUtil.createTokenKeyPair(
+      const tokens = await authUtil.createTokenKeyPair(
         userId,
         decoded.name,
         decoded.email
@@ -52,8 +51,9 @@ class KeyTokenService implements NameClass {
       await keyTokenRepo.createOrUpdate(
         userId,
         tokens.publicKey,
+        tokens.privateKey,
         tokens.refreshToken,
-        [refreshToken, ...key.refreshTokensUsed],
+        refreshToken,
         session
       );
       return {
@@ -65,15 +65,7 @@ class KeyTokenService implements NameClass {
         refreshToken: tokens.refreshToken,
         accessToken: tokens.accessToken,
       };
-    };
-    if (sessionIn) {
-      result = await exec(sessionIn);
-    } else {
-      session = await startSession();
-      result = await transactional.withTransaction(session, async () => {
-        return await exec(session);
-      });
-    }
+    }, sessionIn);
     return result;
   }
 }

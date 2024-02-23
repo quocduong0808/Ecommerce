@@ -57,6 +57,7 @@ class App implements NameClass {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       (error: Error, req: Request, res: Response, next: NextFunction) => {
         console.error(error);
+        const code = error instanceof ApiError ? error.code : undefined;
         const status =
           error instanceof ApiError
             ? error.status
@@ -65,7 +66,7 @@ class App implements NameClass {
           error instanceof ApiError
             ? error.message
             : httpStatus[httpStatus.INTERNAL_SERVER_ERROR];
-        return res.status(status).send(new ApiRes(status, message));
+        return res.status(status).send(new ApiRes(code || status, message));
       }
     );
   }

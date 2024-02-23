@@ -10,6 +10,7 @@ import httpStatus from 'http-status';
 import { keyTokenRepo } from '../repos/keytoken.repo';
 import { IKeyStore } from '../dtos/keystore.dto';
 import IApiKey from '../dtos/apikey.dto';
+import { IShop } from '../dtos/shop.dto';
 
 class Authentication implements NameClass {
   getName(): string {
@@ -30,31 +31,48 @@ class Authentication implements NameClass {
     });
   }
 
-  public createTokenKeyPair(userId: string, name: string, email: string) {
-    const { privateKey, publicKey } = this.generateKeyPair();
+  public async createTokenKeyPair(userId: string, name: string, email: string) {
+    const keyFound = await keyTokenRepo.findKeyByUserId(userId);
+    const { privateKey, publicKey } =
+      keyFound && keyFound.privateKey && keyFound.publicKey
+        ? { privateKey: keyFound.privateKey, publicKey: keyFound.publicKey }
+        : this.generateKeyPair();
     //create access token
-    const accessToken = JWT.sign({ userId, name, email }, privateKey, {
-      algorithm: 'RS256',
-      expiresIn: '30m',
-    });
-    //create refresh token
-    const refreshToken = JWT.sign({ userId, name, email }, privateKey, {
+    const accessToken = JWT.sign({ _id: userId, name, email }, privateKey, {
       algorithm: 'RS256',
       expiresIn: '7d',
     });
-    return { publicKey, accessToken, refreshToken };
+    //create refresh token
+    const refreshToken = JWT.sign({ _id: userId, name, email }, privateKey, {
+      algorithm: 'RS256',
+      expiresIn: '7d',
+    });
+    return { privateKey, publicKey, accessToken, refreshToken };
   }
 
   public verifyToken(token: string, publicKey: string) {
     let decoded;
     try {
       decoded = JWT.verify(token, publicKey) as {
-        userId: string;
+        _id: string;
         name: string;
         email: string;
       };
     } catch (error) {
-      throw new ApiError(httpStatus.UNAUTHORIZED, (error as ApiError).message);
+      console.error(error);
+      if ((error as ApiError).message === AppConst.AUTH.TOKEN_EXPIRE) {
+        throw new ApiError(
+          httpStatus.UNAUTHORIZED,
+          httpStatus[httpStatus.UNAUTHORIZED],
+          undefined,
+          AppConst.HTTP.CODE.TOKEN_EXPIRE_ERROR
+        );
+      } else {
+        throw new ApiError(
+          httpStatus.UNAUTHORIZED,
+          httpStatus[httpStatus.UNAUTHORIZED]
+        );
+      }
     }
     return decoded;
   }
@@ -79,26 +97,24 @@ class Authentication implements NameClass {
       const decoded = this.verifyToken(
         accessToken.toString(),
         key.publicKey || ''
-      ) as { userId: string };
-      if (clientId !== decoded.userId)
+      );
+      if (clientId !== decoded._id)
         throw new ApiError(
           httpStatus.BAD_REQUEST,
           httpStatus[httpStatus.BAD_REQUEST]
         );
       let auth = req.session.auth;
       if (auth) {
-        auth.keyStore = {
-          user: key.user?.toString(),
-          publicKey: key.publicKey,
-          refreshToken: key.refreshToken,
-          refreshTokensUsed: key.refreshTokensUsed,
-        } as IKeyStore;
+        auth.user = decoded as IShop;
+        auth.keyStore = key as unknown as IKeyStore;
       } else {
         auth = {
+          user: decoded as IShop,
           keyStore: key as unknown as IKeyStore,
           apikey: new Object() as IApiKey,
         };
       }
+      req.session.auth = auth;
       return next();
     }
   );

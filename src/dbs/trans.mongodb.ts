@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { ClientSession, startSession } from 'mongoose';
 import { NameClass, getBeanContext } from '../commons/app.context';
 import ApiError from '../commons/api.error';
 
@@ -7,28 +7,39 @@ class Transactional implements NameClass {
     return 'Transactional';
   }
   public async withTransaction(
-    session: mongoose.ClientSession,
-    onExecute: () => Promise<object>
+    onExe: (session: ClientSession) => Promise<object>,
+    session?: mongoose.ClientSession
   ) {
+    let result;
+    session
+      ? (result = await onExe(session))
+      : (result = await this.processWithNewTrans(onExe));
+    return result;
+  }
+  private async processWithNewTrans(
+    onExe: (session: ClientSession) => Promise<object>
+  ) {
+    let newSession;
     try {
-      await session.startTransaction();
+      newSession = await startSession();
+      await newSession.startTransaction();
       console.log('Start transaction::::');
-      const result = await onExecute();
+      const result = await onExe(newSession);
       console.log('Commit transaction::::');
-      await session.commitTransaction();
+      await newSession.commitTransaction();
       return result;
     } catch (error) {
       const err = error as ApiError;
       if (err.errorWithCommit) {
         console.error('Commit transaction with error::::');
-        await session.commitTransaction();
+        await newSession?.commitTransaction();
       } else {
         console.error('Rollback transaction error::::');
-        await session.abortTransaction();
+        await newSession?.abortTransaction();
       }
       throw error;
     } finally {
-      await session.endSession();
+      await newSession?.endSession();
     }
   }
 }

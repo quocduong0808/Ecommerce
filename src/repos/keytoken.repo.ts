@@ -10,22 +10,34 @@ class KeyTokenRepo implements NameClass {
   public async createOrUpdate(
     user: string,
     publicKey?: string,
-    refreshToken?: string,
-    refreshTokensUsed?: Array<string>,
+    privateKey?: string,
+    refreshTokenNew?: string,
+    refreshTokenOld?: string,
     session?: mongoose.ClientSession
   ) {
+    let result;
     const filter: IKeyStore = { user };
     const newKey: IKeyStore = { user };
     publicKey ? (newKey.publicKey = publicKey) : undefined;
-    refreshToken ? (newKey.refreshToken = refreshToken) : undefined;
-    refreshTokensUsed
-      ? (newKey.refreshTokensUsed = refreshTokensUsed)
-      : undefined;
-    return await keyModel.findOneAndUpdate(filter, newKey, {
-      upsert: true,
-      new: true,
-      session,
-    });
+    publicKey ? (newKey.privateKey = privateKey) : undefined;
+    if (refreshTokenOld) {
+      const clObj = Object.assign({}, newKey);
+      clObj.$pull = { refreshTokens: refreshTokenOld };
+      //remove old token
+      result = await keyModel.findOneAndUpdate(filter, clObj, {
+        upsert: true,
+        session,
+      });
+    }
+    if (refreshTokenNew) {
+      newKey.$addToSet = { refreshTokens: refreshTokenNew };
+      result = await keyModel.findOneAndUpdate(filter, newKey, {
+        upsert: true,
+        new: true,
+        session,
+      });
+    }
+    return result;
   }
   public async findKeyById(id: string) {
     return keyModel.findById(id).lean();

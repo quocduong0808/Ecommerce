@@ -16,6 +16,7 @@ class HomeRouter extends RouterBase {
     router.get('/home', asyncHandle(homeController.home));
     router.post('/signup', asyncHandle(homeController.signup));
     router.post('/login', asyncHandle(homeController.login));
+    router.get('/refreshToken', asyncHandle(homeController.refreshToken));
     router.use(authUtil.authentication);
     router.get('/logout', asyncHandle(homeController.logout));
   }
