@@ -1,6 +1,6 @@
 #Ecommerce Express Server
 
-##Docker command \\
+##Docker command  
 ##Pull a image mongo
 - docker pull mongodb/mongodb-community-
 
