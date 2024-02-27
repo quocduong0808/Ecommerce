@@ -22,6 +22,18 @@ class ShopController implements NameClass {
         )
       );
   }
+  public async getDraftProds(req: Request, res: Response) {
+    const id = req.session.auth?.user._id;
+    return res
+      .status(httpStatus.OK)
+      .send(
+        new ApiRes(
+          httpStatus.OK,
+          httpStatus[httpStatus.OK],
+          await producService.getAllDrafProd(id || '')
+        )
+      );
+  }
 }
 
 const shopController = getBeanContext<ShopController>(

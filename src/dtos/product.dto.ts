@@ -11,6 +11,10 @@ export interface IProduct {
   attributes?: unknown;
   images?: Array<string>;
   shop?: string | Types.ObjectId | null;
+  ratingAvg?: number;
+  variations?: Array<string>;
+  isDraff?: boolean;
+  isPublished?: boolean;
 }
 
 export class Product {

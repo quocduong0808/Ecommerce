@@ -6,7 +6,7 @@ const clothingSchema = new Schema(
     shop: {
       type: Schema.Types.ObjectId,
       require: true,
-      ref: 'Shop',
+      ref: AppConst.MONGO_MODEL.DOCUMENT.SHOP,
     },
     brand: {
       type: String,
